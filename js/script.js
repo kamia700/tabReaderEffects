@@ -4,6 +4,16 @@ let fileForm = document.querySelector('.upload__form');
 let tabreader = document.querySelector('.tabreader');
 var hintContainer = document.querySelector('.hint');
 
+
+async function getResponse() {
+  let response = await fetch('https://apps.jam-track.com/drumexchangetempo', {
+     method: 'POST',
+  });
+  console.log(response)
+}
+
+getResponse()
+
 const R = 'RIGHT';
 const L = 'LEFT';
 
