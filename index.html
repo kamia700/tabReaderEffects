@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <title>JamTrack</title>
+
+    <link href="css/style.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <main>
+      <section class="page-wrapper">
+        <div class="hint"></div>
+
+        <section class="tabreader">
+          <div class="at-wrap">
+            <div class="at-overlay">
+              <div class="at-overlay-content">
+              </div>
+            </div>
+            <div class="at-content">
+              <div class="at-sidebar">
+                <div class="at-sidebar-content">
+                  <div class="at-track-list"></div>
+                </div>
+              </div>
+              <div class="at-viewport">
+                <div class="at-main"></div>
+              </div>
+            </div>
+            <div class="at-controls">
+              <div class="at-controls-left button-group button-group--main">
+                <a class="btn at-player-play-pause disabled btn-play button button--primary">
+                  <i class="fas fa-play"></i>
+                </a>
+                <div class="at-song-position">00:00 / 00:00</div>
+                <div class="at-song-info">
+                  <span class="at-song-title"></span> -
+                  <span class="at-song-artist"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="upload">
+          <form class="upload__form" enctype="multipart/form-data" method="post">
+            <div class="upload__btn">
+              <input class="file-uploader visually-hidden" type="file" id="file" name="file" accept=".gp,.gp3,.gp4,.gp5,.gpx,.musicxml,.mxml,.xml,.capx">
+              <label for="file">Выберите файл</label>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <template id="at-track-template">
+        <div class="at-track">
+          <div class="at-track-icon">
+            <i class="fas fa-guitar"></i>
+          </div>
+          <div class="at-track-details">
+            <div class="at-track-name"></div>
+          </div>
+        </div>
+      </template>
+    </main>
+
+    <script src="js/alphatab/api.js"></script>
+    <script src="js/alphatab/alphaTab.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.min.js"></script>
+
+    <script src="js/script.js"></script>
+    <script src="https://kit.fontawesome.com/b43f0e512e.js"></script>
+  </body>
+</html>
