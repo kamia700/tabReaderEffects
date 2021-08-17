@@ -30,6 +30,7 @@ const trackAPI = class {
     const formData = new FormData();
     formData.append("id", id);
     formData.append("tempo", tempo);
+
     return this._load({
       url: `drumexchangetempo`,
       method: Method.POST,

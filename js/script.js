@@ -243,15 +243,14 @@ const renderTrack = (trackFileName, trackId, introFileName, data) => {
     );
   }
   var prevTime = -1;
-    alphaTabAPI.playerPositionChanged.on((e) => {
+  alphaTabAPI.playerPositionChanged.on((e) => {
     var curTime = rounded(e.currentTime / 1000);
     setTime(curTime, data);
     if (formatDuration(e.currentTime) < prevTime) {
-        refreshRender(data);
+      renderEffects(data);
     }
     prevTime = formatDuration(e.currentTime);
   });
-
 }
 
 const renderNewTraining = () => {
@@ -262,13 +261,16 @@ const renderNewTraining = () => {
     renderEffects(response.kick_times4feedback);
   });
 };
-
 getCookie(`id`) ? changeTempo(getCookie(`id`), getCookie(`tempo`)) : renderNewTraining();
 
 
-// EFFECTS
 
+
+// EFFECTS
 var hintContainer = document.querySelector('.hint');
+var hintContainerLeft = document.querySelector('.hint__left');
+var hintContainerCenter = document.querySelector('.hint__center');
+var hintContainerRight = document.querySelector('.hint__right');
 
 const R = 'Right';
 const L = 'Left';
@@ -277,6 +279,12 @@ function rounded(number) {
   return +number.toFixed(2);
 }
 
+Object.filter = (obj, predicate) =>
+Object.keys(obj)
+    .filter( key => predicate(obj[key]) )
+    .reduce( (res, key) => Object.assign(res, { [key]: obj[key] }), {}
+);
+
 function sortObj(obj) {
   var effect = obj.effects.flat();
   if (effect.length > 0 || obj.texts !== ' ') {
@@ -284,68 +292,78 @@ function sortObj(obj) {
   }
 }
 
-function addEffect(key, el) {
-  b = document.createElement('div');
-  b.classList.add(key);
-  b.innerHTML = el;
-  hintContainer.appendChild(b);
+function createAnimation(el, duration_second, startTime) {
+  el.classList.add('animated');
+  el.style.animationName = 'moveDown';
+  el.style.animationDuration = duration_second + 's';
+  el.style.animationDelay = startTime - duration_second + 'ms';
+  el.style.animationTimingFunction = 'linear';
+  el.style.animationPlayState = 'paused';
 }
 
-Object.filter = (obj, predicate) =>
-Object.keys(obj)
-    .filter( key => predicate(obj[key]) )
-    .reduce( (res, key) => Object.assign(res, { [key]: obj[key] }), {}
-);
+function addEffect(key, el, container, duration_second, startTime) {
+  b = document.createElement('p');
+  b.innerHTML = el;
+  b.classList.add('effect');
+  createAnimation(container, duration_second, startTime);
+  container.appendChild(b);
+}
 
 function renderEffects(data) {
-  hintContainer.textContent = ``;
+  hintContainerLeft.textContent = ``;
+  hintContainerCenter.textContent = ``;
+  hintContainerRight.textContent = ``;
+
   var filteredData = Object.filter(data, sortObj);
   Object.keys(filteredData).forEach(function(key) {
     var effect = filteredData[key].effects.flat();
 
+    text = document.createElement('div');
+    text.classList.add(key);
+
     effect.forEach(element => {
-      addEffect(key, element);
+      hintContainerCenter.appendChild(text);
+      addEffect(key, element, text, filteredData[key].duration_second, filteredData[key].time);
     });
 
     var hand = filteredData[key].texts;
     switch(hand) {
        case 'R':
-        addEffect(key, R)
-          break;
+        text = document.createElement('div');
+        text.classList.add(key);
+        hintContainerRight.appendChild(text);
+        addEffect(key, R, text, filteredData[key].duration_second, filteredData[key].time);
+
+        break;
        case 'L':
-        addEffect(key, L)
-       break;
+        text = document.createElement('div');
+        text.classList.add(key);
+        hintContainerLeft.appendChild(text);
+        addEffect(key, L, text, filteredData[key].duration_second, filteredData[key].time);
+        break;
     }
  });
 };
-
 
 function setTime(curTime, data) {
   var filteredData = Object.filter(data, sortObj);
 
   Object.keys(filteredData).forEach(function(key) {
-    var startTime = rounded(filteredData[key].time);
-    var endTime = rounded((filteredData[key].time) + (filteredData[key].duration_second));
+    var startTime = rounded((filteredData[key].time) - (filteredData[key].duration_second));
+    var endTime = rounded(filteredData[key].time);
 
-    if (curTime >= startTime) {
+    if (curTime == 0 && endTime == 0) {
       var el = document.getElementsByClassName(key);
       Array.from(el).forEach(element => {
-        element.style.color = 'green';
-        if (curTime >= endTime) {
-          element.style.display = 'none';
-        }
+        element.style.display = 'none';
+      })
+    }
+
+    if (curTime > startTime && curTime < endTime) {
+      var el = document.getElementsByClassName(key);
+      Array.from(el).forEach(element => {
+        element.style.animationPlayState = 'running';
       });
     }
-  });
-}
-
-function refreshRender(data) {
-  var filteredData = Object.filter(data, sortObj);
-  Object.keys(filteredData).forEach(function(key) {
-     var el = document.getElementsByClassName(key);
-     Array.from(el).forEach(element => {
-        element.style.color = 'black';
-        element.style.display = 'block';
-     });
   });
 }
